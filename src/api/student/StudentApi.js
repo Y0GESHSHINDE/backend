@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const student = require("../../models/student/studentModels")
 
-router.use(express.json());
+// router.use(express.json());
 
 // api to create student
 router.post("/addStudent", async (req, res) => {
@@ -68,6 +68,7 @@ router.get("/getStudentByNameAndEmail", async (req, res) => {
    }
 });
 
+// api to update student using id 
 router.patch("/updateStudent", async (req, res) => {
    const { id } = req.query; // Get ID from query params
    if (!id) {
@@ -78,7 +79,24 @@ router.patch("/updateStudent", async (req, res) => {
        if (!updatedStudent) {
            return res.status(404).json({ message: "Student not found" });
        }
-       res.status(200).json(updatedStudent);
+       res.status(200).json("Student updated successfully");
+   } catch (error) {
+       res.status(500).json({ error: error.message });
+   }
+});
+
+// api to delete student using id
+router.delete("/deleteStudent", async (req, res) => {
+   const { id } = req.query; // Get ID from query params
+   if (!id) {
+       return res.status(400).json({ message: "ID is required" });
+   }
+   try {
+       const deletedStudent = await student.findByIdAndDelete(id);
+       if (!deletedStudent) {
+           return res.status(404).json({ message: "Student not found" });
+       }
+       res.status(200).json("Student deleted successfully");
    } catch (error) {
        res.status(500).json({ error: error.message });
    }
